@@ -1,0 +1,444 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API de Produtos e Estoque",
+    "version": "1.0.0",
+    "description": "Documentação da API para gerenciamento de produtos, usuários e estoque."
+  },
+  "paths": {
+    "/produtos": {
+      "get": {
+        "tags": ["produto"],
+        "summary": "Listar todos os produtos",
+        "security": [{ "access-token": [] }],
+        "responses": {
+          "200": {
+            "description": "Lista de produtos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Produto" }
+                }
+              }
+            }
+          },
+          "401": { "description": "Usuário não autenticado" },
+          "500": { "description": "Erro ao listar produtos" }
+        }
+      },
+      "post": {
+        "tags": ["produto"],
+        "summary": "Criar um novo produto",
+        "security": [{ "access-token": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Produto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Produto criado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Produto" }
+              }
+            }
+          },
+          "401": { "description": "Usuário não autenticado" },
+          "500": { "description": "Erro ao criar produto" }
+        }
+      }
+    },
+    "/produtos/{id}": {
+      "get": {
+        "tags": ["produto"],
+        "summary": "Obter um produto pelo ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Produto encontrado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Produto" }
+              }
+            }
+          },
+          "404": { "description": "Produto não encontrado" },
+          "500": { "description": "Erro ao obter produto" }
+        }
+      },
+      "put": {
+        "tags": ["produto"],
+        "summary": "Atualizar um produto existente",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Produto" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Produto atualizado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Produto" }
+              }
+            }
+          },
+          "404": { "description": "Produto não encontrado" },
+          "500": { "description": "Erro ao atualizar produto" }
+        }
+      },
+      "delete": {
+        "tags": ["produto"],
+        "summary": "Deletar um produto",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Produto deletado" },
+          "404": { "description": "Produto não encontrado" },
+          "500": { "description": "Erro ao deletar produto" }
+        }
+      }
+    },
+    "/usuario": {
+      "get": {
+        "tags": ["usuario"],
+        "summary": "Listar todos os usuários",
+        "responses": {
+          "200": {
+            "description": "Lista de usuários",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Usuario" }
+                }
+              }
+            }
+          },
+          "500": { "description": "Erro ao listar usuários" }
+        }
+      },
+      "post": {
+        "tags": ["usuario"],
+        "summary": "Criar um novo usuário",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Usuario" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuário criado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Usuario" }
+              }
+            }
+          },
+          "500": { "description": "Erro ao criar usuário" }
+        }
+      }
+    },
+    "/usuario/{id}": {
+      "get": {
+        "tags": ["usuario"],
+        "summary": "Obter um usuário pelo ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário encontrado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Usuario" }
+              }
+            }
+          },
+          "404": { "description": "Usuário não encontrado" },
+          "500": { "description": "Erro ao obter usuário" }
+        }
+      },
+      "put": {
+        "tags": ["usuario"],
+        "summary": "Atualizar um usuário existente",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Usuario" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Usuário atualizado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Usuario" }
+              }
+            }
+          },
+          "404": { "description": "Usuário não encontrado" },
+          "500": { "description": "Erro ao atualizar usuário" }
+        }
+      },
+      "delete": {
+        "tags": ["usuario"],
+        "summary": "Deletar um usuário",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Usuário deletado" },
+          "404": { "description": "Usuário não encontrado" },
+          "500": { "description": "Erro ao deletar usuário" }
+        }
+      }
+    },
+    "/usuario/login": {
+      "post": {
+        "tags": ["usuario"],
+        "summary": "Login do usuário",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": { "type": "string" },
+                  "password": { "type": "string" }
+                },
+                "required": ["username", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login bem-sucedido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "token": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Username e password são obrigatórios" },
+          "401": { "description": "Username ou password inválidos" },
+          "500": { "description": "Erro ao realizar login" }
+        }
+      }
+    },
+    "/estoque/entrada": {
+      "post": {
+        "tags": ["estoque"],
+        "summary": "Registrar entrada de estoque",
+        "security": [{ "access-token": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Entrada" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Entrada de estoque registrada",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Entrada" }
+              }
+            }
+          },
+          "401": { "description": "Usuário não autenticado" },
+          "500": { "description": "Erro ao registrar entrada de estoque" }
+        }
+      }
+    },
+    "/estoque/saida": {
+      "post": {
+        "tags": ["estoque"],
+        "summary": "Registrar saída de estoque",
+        "security": [{ "access-token": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Saida" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Saída de estoque registrada",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Saida" }
+              }
+            }
+          },
+          "401": { "description": "Usuário não autenticado" },
+          "500": { "description": "Erro ao registrar saída de estoque" }
+        }
+      }
+    },
+    "/relatorio/estoque": {
+      "post": {
+        "tags": ["relatorio"],
+        "summary": "Gerar relatório de estoque por período",
+        "security": [{ "access-token": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data_inicio": { "type": "string", "format": "date-time", "example": "2024-01-01T00:00:00Z" },
+                  "data_fim": { "type": "string", "format": "date-time", "example": "2024-01-31T23:59:59Z" }
+                },
+                "required": ["data_inicio", "data_fim"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Relatório de estoque",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Relatorio" }
+                }
+              }
+            }
+          },
+          "400": { "description": "Dados de início e fim são obrigatórios" },
+          "401": { "description": "Usuário não autenticado" },
+          "500": { "description": "Erro ao gerar relatório de estoque" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "access-token": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "access-token",
+        "description": "Token de acesso em formato Base64 com informações do usuário"
+      }
+    },
+    "schemas": {
+      "Produto": {
+        "type": "object",
+        "properties": {
+          "id_produto": { "type": "integer", "example": 1 },
+          "nome": { "type": "string", "example": "Produto Exemplo" },
+          "cod_barra": { "type": "number", "format": "float", "example": 1457986552 },
+          "quantidade": { "type": "integer", "example": 10 },
+          "validade": { "type": "string", "format": "date", "example": "2024-12-31" },
+          "user": { "type": "integer", "example": 1 }
+        }
+      },
+      "Usuario": {
+        "type": "object",
+        "properties": {
+          "id_user": { "type": "integer", "example": 1 },
+          "username": { "type": "string", "example": "João da Silva" },
+          "password": { "type": "string", "example": "joao@email.com" }
+        }
+      },
+      "Relatorio": {
+        "type": "object",
+        "properties": {
+          "id_saida": { "type": "integer", "example": 1 },
+          "id_entrada": { "type": "integer", "example": 1 },
+          "quantidade": { "type": "integer", "example": 5 },
+          "id_produto": { "type": "integer", "example": 1 },
+          "data_hora": { "type": "string", "format": "date-time", "example": "2024-01-01T12:00:00Z" },
+          "user": { "type": "integer", "example": 1 }
+        }
+      },
+      "Entrada": {
+        "type": "object",
+        "properties": {
+          "id_entrada": { "type": "integer", "example": 1 },
+          "quantidade": { "type": "integer", "example": 10 },
+          "id_produto": { "type": "integer", "example": 1 },
+          "data_hora": { "type": "string", "format": "date-time", "example": "2024-01-01T12:00:00Z" },
+          "user": { "type": "integer", "example": 1 }
+        }
+      },
+      "Saida": {
+        "type": "object",
+        "properties": {
+          "id_saida": { "type": "integer", "example": 1 },
+          "quantidade": { "type": "integer", "example": 10 },
+          "id_produto": { "type": "integer", "example": 1 },
+          "data_hora": { "type": "string", "format": "date-time", "example": "2024-01-01T12:00:00Z" },
+          "user": { "type": "integer", "example": 1 }
+        }
+      }
+    }
+  }
+}
