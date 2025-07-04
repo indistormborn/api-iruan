@@ -1,6 +1,5 @@
 import { Sequelize, DataTypes } from 'sequelize';
 
-
 Sequelize.afterConnect(() => {
   console.log('Conexão com o banco de dados estabelecida com sucesso!');
 });
@@ -9,15 +8,19 @@ Sequelize.afterDisconnect(() => {
   console.log('Conexão com o banco de dados encerrada.');
 });
 
+const isProduction = process.env.ENV === 'production';
+
 const sequelize = new Sequelize('stockpro', 'postgres', 'postgres', {
-  host: "stockpro.cdwmm22cqnql.sa-east-1.rds.amazonaws.com",
+  host: process.env.DB_HOST,
   dialect: 'postgres',
-  dialectOptions: { //< Add this
-    ssl: {
-      require: true,
-      rejectUnauthorized: false
+  ...(isProduction && {
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
     }
-  },
+  }),
   logging: false
 });
 
