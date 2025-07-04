@@ -4,32 +4,6 @@ import { Entrada, Saida } from '../db.js';
 import { Op } from 'sequelize';
 import { getUserFromToken } from '../token.js';
 import logger from '../logger.js';
-import { parse, isValid } from 'date-fns';
-
-const parseDate = (dateString) => {
-  if (!dateString) throw new Error('Data não informada');
-  const formatos = [
-    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx",
-    "yyyy-MM-dd'T'HH:mm:ssxxx",
-    "yyyy-MM-dd HH:mm:ss",
-    "yyyy-MM-dd",
-    "dd/MM/yyyy",
-    "MM/dd/yyyy",
-    "dd-MM-yyyy",
-    "MM-dd-yyyy"
-  ];
-  for (const formato of formatos) {
-    const date = parse(dateString, formato, new Date());
-    if (isValid(date)) {
-      return date; // Retorne o objeto Date
-    }
-  }
-  const date = new Date(dateString);
-  if (isValid(date)) {
-    return date; // Retorne o objeto Date
-  }
-  throw new Error('Data inválida');
-}
 
 router.post('/relatorio/estoque', async (req, res) => {
   try {
@@ -44,8 +18,10 @@ router.post('/relatorio/estoque', async (req, res) => {
       return res.status(400).json({ error: 'Dados de início ou fim são obrigatórios' });
     }
 
-    const dataInicio = body.data_inicio ? parseDate(body.data_inicio) : null;
-    const dataFim = body.data_fim ? parseDate(body.data_fim) : null;
+    logger.info(`Usuário ${user.username} solicitando relatório de estoque`, { data_inicio: body.data_inicio, data_fim: body.data_fim });
+
+    const dataInicio = body.data_inicio ? new Date(body.data_inicio) : null;
+    const dataFim = body.data_fim ? new Date(body.data_fim) : null;
 
     const query = { user: user.id_user };
     if(dataInicio && dataFim) {
