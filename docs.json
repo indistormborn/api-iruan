@@ -409,14 +409,15 @@
         }
       },
       "Relatorio": {
-        "type": "object",
-        "properties": {
-          "id_relatorio": { "type": "integer", "example": 1 },
-          "tipo": { "type": "string", "example": "entrada" },
-          "quantidade": { "type": "integer", "example": 5 },
-          "id_produto": { "type": "integer", "example": 1 },
-          "data_hora": { "type": "string", "format": "date-time", "example": "2024-01-01T12:00:00Z" },
-          "user": { "type": "integer", "example": 1 }
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "tipo": { "type": "string", "example": "entrada" },
+            "quantidade": { "type": "integer", "example": 5 },
+            "produto": { "type": "string", "example": "Produto Exemplo" },
+            "data_hora": { "type": "string", "format": "date-time", "example": "2024-01-01T12:00:00Z" }
+          }
         }
       },
       "Entrada": {

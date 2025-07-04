@@ -38,13 +38,18 @@ router.post('/relatorio/estoque', async (req, res) => {
     }
 
     logger.info(`Usuário ${user.username} gerando relatório de estoque`, { userId: user.id_user, query });
-
     const [relatorioEntrada, relatorioSaida] = await Promise.all([
-      Entrada.findAll({ where: query }),
-      Saida.findAll({ where: query })
+      Entrada.findAll({ 
+        where: query,
+        include: [{ association: 'Produto' }] // Certifique-se de que a associação 'produto' está definida no modelo Entrada
+      }),
+      Saida.findAll({ 
+        where: query,
+        include: [{ association: 'Produto' }] // Certifique-se de que a associação 'produto' está definida no modelo Saida
+      })
     ]);
 
-    const relatorio = relatorioEntrada.concat(relatorioSaida).sort((a, b) => new Date(a.data_hora) - new Date(b.data_hora));
+    const relatorio = configuraEstruturaDoRelatorio(relatorioEntrada, relatorioSaida);
 
     res.json(relatorio);
   } catch (error) {
@@ -52,5 +57,24 @@ router.post('/relatorio/estoque', async (req, res) => {
     res.status(500).json({ error: 'Erro ao gerar relatório de estoque' });
   }
 });
+
+const configuraEstruturaDoRelatorio = (entradas, saidas) => {
+  const parsedEntradas = entradas.map(entrada => ({
+    tipo: 'Entrada',
+    quantidade: entrada.quantidade,
+    produto: entrada.Produto ? entrada.Produto.nome : entrada.id_produto, // Use o nome do produto se disponível
+    data_hora: entrada.data_hora,
+  }));
+
+  const parsedSaidas = saidas.map(saida => ({
+    tipo: 'Saída',
+    quantidade: saida.quantidade,
+    produto: saida.Produto ? saida.Produto.nome : saida.id_produto, // Use o nome do produto se disponível
+    data_hora: saida.data_hora,
+  }));
+
+  return parsedEntradas.concat(parsedSaidas)
+    .sort((a, b) => new Date(a.data_hora) - new Date(b.data_hora));
+}
 
 export default router;
