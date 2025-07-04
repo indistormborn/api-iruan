@@ -63,4 +63,52 @@ router.post('/estoque/saida', async (req, res) => {
   }
 });
 
+router.get('/estoque/entrada', async (req, res) => {
+  try {
+    const user = getUserFromToken(req, res);
+    if (!user) {
+      logger.error('Usuário não autenticado ao listar entradas de estoque');
+      return res.status(401).json({ error: 'Usuário não autenticado' });
+    }
+
+    const entradas = await Entrada.findAll({
+      where: { user: user.id_user },
+      include: [{ association: 'Produto' }]
+    });
+
+    res.json(entradas.map(entrada => ({
+      produto: entrada.Produto ? entrada.Produto.nome : entrada.id_produto,
+      quantidade: entrada.quantidade,
+      data_hora: entrada.data_hora,
+    })));
+  } catch (error) {
+    logger.error('Erro ao listar entradas de estoque', { error });
+    res.status(500).json({ error: 'Erro ao listar entradas de estoque' });
+  }
+});
+
+router.get('/estoque/saida', async (req, res) => {
+  try {
+    const user = getUserFromToken(req, res);
+    if (!user) {
+      logger.error('Usuário não autenticado ao listar saídas de estoque');
+      return res.status(401).json({ error: 'Usuário não autenticado' });
+    }
+
+    const saidas = await Saida.findAll({
+      where: { user: user.id_user },
+      include: [{ association: 'Produto' }]
+    });
+
+    res.json(saidas.map(saida => ({
+      produto: saida.Produto ? saida.Produto.nome : saida.id_produto,
+      quantidade: saida.quantidade,
+      data_hora: saida.data_hora,
+    })));
+  } catch (error) {
+    logger.error('Erro ao listar saídas de estoque', { error });
+    res.status(500).json({ error: 'Erro ao listar saídas de estoque' });
+  }
+});
+
 export default router;
