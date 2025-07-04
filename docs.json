@@ -311,6 +311,33 @@
           "401": { "description": "Usuário não autenticado" },
           "500": { "description": "Erro ao registrar entrada de estoque" }
         }
+      },
+      "get": {
+        "tags": ["estoque"],
+        "summary": "Listar entradas de estoque do usuário",
+        "security": [{ "access-token": [] }],
+        "responses": {
+          "200": {
+            "description": "Lista de entradas de estoque",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "produto": { "type": "string", "example": "Produto Exemplo" },
+                      "quantidade": { "type": "integer", "example": 10 },
+                      "data_hora": { "type": "string", "format": "date-time", "example": "2024-01-01T12:00:00Z" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Usuário não autenticado" },
+          "500": { "description": "Erro ao listar entradas de estoque" }
+        }
       }
     },
     "/estoque/saida": {
@@ -337,6 +364,33 @@
           },
           "401": { "description": "Usuário não autenticado" },
           "500": { "description": "Erro ao registrar saída de estoque" }
+        }
+      },
+      "get": {
+        "tags": ["estoque"],
+        "summary": "Listar saídas de estoque do usuário",
+        "security": [{ "access-token": [] }],
+        "responses": {
+          "200": {
+            "description": "Lista de saídas de estoque",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "produto": { "type": "string", "example": "Produto Exemplo" },
+                      "quantidade": { "type": "integer", "example": 10 },
+                      "data_hora": { "type": "string", "format": "date-time", "example": "2024-01-01T12:00:00Z" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Usuário não autenticado" },
+          "500": { "description": "Erro ao listar saídas de estoque" }
         }
       }
     },
