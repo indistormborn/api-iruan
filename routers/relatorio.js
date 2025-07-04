@@ -4,6 +4,32 @@ import { Entrada, Saida } from '../db.js';
 import { Op } from 'sequelize';
 import { getUserFromToken } from '../token.js';
 import logger from '../logger.js';
+import { parse, isValid } from 'date-fns';
+
+const parseDate = (dateString) => {
+  if (!dateString) throw new Error('Data não informada');
+  const formatos = [
+    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx",
+    "yyyy-MM-dd'T'HH:mm:ssxxx",
+    "yyyy-MM-dd HH:mm:ss",
+    "yyyy-MM-dd",
+    "dd/MM/yyyy",
+    "MM/dd/yyyy",
+    "dd-MM-yyyy",
+    "MM-dd-yyyy"
+  ];
+  for (const formato of formatos) {
+    const date = parse(dateString, formato, new Date());
+    if (isValid(date)) {
+      return date; // Retorne o objeto Date
+    }
+  }
+  const date = new Date(dateString);
+  if (isValid(date)) {
+    return date; // Retorne o objeto Date
+  }
+  throw new Error('Data inválida');
+}
 
 router.post('/relatorio/estoque', async (req, res) => {
   try {
@@ -18,22 +44,25 @@ router.post('/relatorio/estoque', async (req, res) => {
       return res.status(400).json({ error: 'Dados de início ou fim são obrigatórios' });
     }
 
-    const query = { user: user.id_user, data_hora: {} };
-    if(body.data_inicio && body.data_fim) {
+    const dataInicio = body.data_inicio ? parseDate(body.data_inicio) : null;
+    const dataFim = body.data_fim ? parseDate(body.data_fim) : null;
+
+    const query = { user: user.id_user };
+    if(dataInicio && dataFim) {
       query.data_hora = {
-        [Op.between]: [body.data_inicio, body.data_fim]
+        [Op.between]: [dataInicio, dataFim]
       };
     }
 
-    if(!body.data_inicio && body.data_fim) {
+    if(!dataInicio && dataFim) {
       query.data_hora = {
-        [Op.lte]: body.data_fim
+        [Op.lte]: dataFim
       };
     }
 
-    if(body.data_inicio && !body.data_fim) {
+    if(dataInicio && !dataFim) {
       query.data_hora = {
-        [Op.gte]: body.data_inicio
+        [Op.gte]: dataInicio
       };
     }
 
