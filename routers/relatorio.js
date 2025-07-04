@@ -66,7 +66,7 @@ router.post('/relatorio/estoque', async (req, res) => {
       };
     }
 
-    logger.info(`Usuário ${user.username} gerando relatório de estoque`, { userId: user.id_user, query });
+    logger.info(`Usuário ${user.username} gerando relatório de estoque`, { query: JSON.stringify(query) });
     const [relatorioEntrada, relatorioSaida] = await Promise.all([
       Entrada.findAll({ 
         where: query,
