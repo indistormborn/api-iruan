@@ -13,7 +13,7 @@ router.post('/relatorio/estoque', async (req, res) => {
       return res.status(401).json({ error: 'Usuário não autenticado' });
     }
     const body = req.body;
-    if (!body || (!body.data_inicio && !body.data_fim)) {
+    if (!body || !body.data_inicio || !body.data_fim) {
       logger.warn('Dados de início ou fim são obrigatórios');
       return res.status(400).json({ error: 'Dados de início ou fim são obrigatórios' });
     }
@@ -22,28 +22,21 @@ router.post('/relatorio/estoque', async (req, res) => {
 
     const dataInicio = body.data_inicio ? new Date(body.data_inicio) : null;
     const dataFim = body.data_fim ? new Date(body.data_fim) : null;
-
-    const query = { user: user.id_user, data_hora: {
-      [Op.and]: []
-    } };
-
-    if (dataInicio) {
-      query.data_hora[Op.and].push({ [Op.gte]: dataInicio });
-    }
-
-    if (dataFim) {
-      query.data_hora[Op.and].push({ [Op.lte]: dataFim });
-    }
+    const query = { user: user.id_user };
 
     logger.info(`Usuário ${user.username} gerando relatório de estoque`, { query: JSON.stringify(query) });
     const [relatorioEntrada, relatorioSaida] = await Promise.all([
       Entrada.findAll({ 
         where: query,
         include: [{ association: 'Produto' }] // Certifique-se de que a associação 'produto' está definida no modelo Entrada
+      }).then(entradas => {
+        return entradas.sort((a, b) => new Date(a.data_hora) - new Date(b.data_hora));
       }),
-      Saida.findAll({ 
+      Saida.findAll({
         where: query,
         include: [{ association: 'Produto' }] // Certifique-se de que a associação 'produto' está definida no modelo Saida
+      }).then(saidas => {
+        return saidas.sort((a, b) => new Date(a.data_hora) - new Date(b.data_hora));
       })
     ]);
 
