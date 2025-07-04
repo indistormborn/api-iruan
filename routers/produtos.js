@@ -10,8 +10,6 @@ const produtoSchema = Joi.object({
   nome: Joi.string().required(),
   cod_barra: Joi.string().required(),
   quantidade: Joi.number().integer().min(0).required(),
-  validade: Joi.date(),
-  user: Joi.number().integer().required()
 });
 // Listar todos os produtos
 router.get('/produtos', async (req, res) => {
