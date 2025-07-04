@@ -13,9 +13,9 @@ router.post('/relatorio/estoque', async (req, res) => {
       return res.status(401).json({ error: 'Usuário não autenticado' });
     }
     const body = req.body;
-    if (!body || !body.data_inicio || !body.data_fim) {
-      logger.warn('Dados de início e fim são obrigatórios');
-      return res.status(400).json({ error: 'Dados de início e fim são obrigatórios' });
+    if (!body || (!body.data_inicio && !body.data_fim)) {
+      logger.warn('Dados de início ou fim são obrigatórios');
+      return res.status(400).json({ error: 'Dados de início ou fim são obrigatórios' });
     }
 
     const query = { user: user.id_user, data_hora: {} };
