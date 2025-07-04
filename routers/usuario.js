@@ -3,6 +3,14 @@ const router = Router();
 import { User } from '../db.js';
 import { generateToken } from '../token.js';
 import logger from '../logger.js';
+import Joi from 'joi';
+import { validateJoi } from '../middlewares.js';
+
+const userSchema = Joi.object({
+  username: Joi.string().required(),
+  password: Joi.string().required()
+});
+
 // Listar todos os usuarios
 router.get('/usuario', async (req, res) => {
   try {
@@ -34,13 +42,9 @@ router.get('/usuario/:id', async (req, res) => {
 });
 
 // Criar um novo usuario
-router.post('/usuario', async (req, res) => {
+router.post('/usuario', validateJoi(userSchema), async (req, res) => {
   try {
     logger.info('Criando novo usuario:', req.body);
-    if (!req.body.username || !req.body.password) {
-      logger.warn('Dados incompletos para criação de usuario');
-      return res.status(400).json({ error: 'Username e password são obrigatórios' });
-    }
     const novoUsuario = await User.create(req.body);
     logger.info(`Usuario criado com sucesso: ${novoUsuario.username}`);
     res.status(201).json(novoUsuario);
@@ -51,7 +55,7 @@ router.post('/usuario', async (req, res) => {
 });
 
 // Atualizar um usuario existente
-router.put('/usuario/:id', async (req, res) => {
+router.put('/usuario/:id', validateJoi(userSchema), async (req, res) => {
   try {
     logger.info(`Atualizando usuario com ID: ${req.params.id}`, { usuario: req.body });
     const [updated] = await User.update(req.body, {

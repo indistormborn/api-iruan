@@ -3,7 +3,16 @@ const router = Router();
 import { Produto } from '../db.js';
 import { getUserFromToken } from '../token.js';
 import logger from '../logger.js';
+import { validateJoi } from '../middlewares.js';
+import Joi from 'joi';
 
+const produtoSchema = Joi.object({
+  nome: Joi.string().required(),
+  cod_barra: Joi.string().required(),
+  quantidade: Joi.number().integer().min(0).required(),
+  validade: Joi.date().required(),
+  user: Joi.number().integer().required()
+});
 // Listar todos os produtos
 router.get('/produtos', async (req, res) => {
   try {
@@ -40,7 +49,7 @@ router.get('/produtos/:id', async (req, res) => {
 });
 
 // Criar um novo produto
-router.post('/produtos', async (req, res) => {
+router.post('/produtos', validateJoi(produtoSchema), async (req, res) => {
   try {
     const user = getUserFromToken(req, res);
     if (!user) {
@@ -57,7 +66,7 @@ router.post('/produtos', async (req, res) => {
 });
 
 // Atualizar um produto existente
-router.put('/produtos/:id', async (req, res) => {
+router.put('/produtos/:id', validateJoi(produtoSchema), async (req, res) => {
   try {
     logger.info(`Usuário solicitando atualização do produto com ID ${req.params.id}`, { produto: req.body });
     const [updated] =  await Produto.update(req.body, {
