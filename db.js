@@ -17,7 +17,8 @@ const sequelize = new Sequelize('stockpro', 'postgres', 'postgres', {
       require: true,
       rejectUnauthorized: false
     }
-  }
+  },
+  logging: false
 });
 
 const User = sequelize.define('User', {

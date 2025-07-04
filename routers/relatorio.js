@@ -3,15 +3,18 @@ const router = Router();
 import { Entrada, Saida } from '../db.js';
 import { Op } from 'sequelize';
 import { getUserFromToken } from '../token.js';
+import logger from '../logger.js';
 
 router.post('/relatorio/estoque', async (req, res) => {
   try {
     const user = getUserFromToken(req, res);
     if (!user) {
+      logger.error('Usuário não autenticado');
       return res.status(401).json({ error: 'Usuário não autenticado' });
     }
     const body = req.body;
     if (!body || !body.data_inicio || !body.data_fim) {
+      logger.warn('Dados de início e fim são obrigatórios');
       return res.status(400).json({ error: 'Dados de início e fim são obrigatórios' });
     }
 
@@ -34,6 +37,8 @@ router.post('/relatorio/estoque', async (req, res) => {
       };
     }
 
+    logger.info(`Usuário ${user.username} gerando relatório de estoque`, { userId: user.id_user, query });
+
     const [relatorioEntrada, relatorioSaida] = await Promise.all([
       Entrada.findAll({ where: query }),
       Saida.findAll({ where: query })
@@ -43,6 +48,7 @@ router.post('/relatorio/estoque', async (req, res) => {
 
     res.json(relatorio);
   } catch (error) {
+    logger.error('Erro ao gerar relatório de estoque', { error });
     res.status(500).json({ error: 'Erro ao gerar relatório de estoque' });
   }
 });
