@@ -23,23 +23,16 @@ router.post('/relatorio/estoque', async (req, res) => {
     const dataInicio = body.data_inicio ? new Date(body.data_inicio) : null;
     const dataFim = body.data_fim ? new Date(body.data_fim) : null;
 
-    const query = { user: user.id_user };
-    if(dataInicio && dataFim) {
-      query.data_hora = {
-        [Op.between]: [dataInicio, dataFim]
-      };
+    const query = { user: user.id_user, data_hora: {
+      [Op.and]: []
+    } };
+
+    if (dataInicio) {
+      query.data_hora[Op.and].push({ [Op.gte]: dataInicio });
     }
 
-    if(!dataInicio && dataFim) {
-      query.data_hora = {
-        [Op.lte]: dataFim
-      };
-    }
-
-    if(dataInicio && !dataFim) {
-      query.data_hora = {
-        [Op.gte]: dataInicio
-      };
+    if (dataFim) {
+      query.data_hora[Op.and].push({ [Op.lte]: dataFim });
     }
 
     logger.info(`Usuário ${user.username} gerando relatório de estoque`, { query: JSON.stringify(query) });
